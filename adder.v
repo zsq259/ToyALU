@@ -18,34 +18,24 @@ module CarryLookaheadAdder(
 endmodule
 
 module adder(
-        input wire[15:0] a,
-        input wire[15:0] b,
-        input wire c0,
-        output wire[15:0] S,
-        output wire carry
-    );    
-    wire[3:1] c;    
-    
-    CarryLookaheadAdder subAdder0(a[3:0], b[3:0], c0, S[3:0], c[1]);
-    CarryLookaheadAdder subAdder1(a[7:4], b[7:4], c[1], S[7:4], c[2]);
-    CarryLookaheadAdder subAdder2(a[11:8], b[11:8], c[2], S[11:8], c[3]);
-    CarryLookaheadAdder subAdder3(a[15:12], b[15:12], c[3], S[15:12], carry);
-endmodule
-
-module adder32(
         input wire[31:0] a,
         input wire[31:0] b,
         input wire c0,
         output wire[31:0] S,
         output wire carry
     );    
-    wire[3:1] c;
+    wire[7:1] c;    
     
-    adder subAdder0(a[15:0], b[15:0], c0, S[15:0], c[1]);
-    adder subAdder1(a[31:16], b[31:16], c[1], S[31:16], carry);
-    
-endmodule
+    CarryLookaheadAdder subAdder0(a[3:0], b[3:0], c0, S[3:0], c[1]);
+    CarryLookaheadAdder subAdder1(a[7:4], b[7:4], c[1], S[7:4], c[2]);
+    CarryLookaheadAdder subAdder2(a[11:8], b[11:8], c[2], S[11:8], c[3]);
+    CarryLookaheadAdder subAdder3(a[15:12], b[15:12], c[3], S[15:12], c[4]);
+    CarryLookaheadAdder subAdder4(a[19:16], b[19:16], c[4], S[19:16], c[5]);
+    CarryLookaheadAdder subAdder5(a[23:20], b[23:20], c[5], S[23:20], c[6]);
+    CarryLookaheadAdder subAdder6(a[27:24], b[27:24], c[6], S[27:24], c[7]);
+    CarryLookaheadAdder subAdder7(a[31:28], b[31:28], c[7], S[31:28], carry);
 
+endmodule
 
 module Add(
         input wire[31:0] a,
@@ -54,7 +44,7 @@ module Add(
     );
     wire zero = 0;    
     wire[31:0] ret;
-    adder32 adder(a, b, zero, ret, null);
+    adder adder(a, b, zero, ret, null);
     always @* begin
         sum <= ret;
     end
