@@ -1,20 +1,25 @@
 module CarryLookaheadAdder(
-        input wire[3:0] a,
-        input wire[3:0] b,
+        input wire[7:0] a,
+        input wire[7:0] b,
         input wire c0,
-        output wire[3:0] S,
+        output wire[7:0] S,
         output wire carry
     );
-    wire[3:0] c;
-    wire[3:0] G = a & b;
-    wire[3:0] P = a ^ b;
+    wire[7:0] c;
+    wire[7:0] G = a & b;
+    wire[7:0] P = a ^ b;
     assign c[0] = c0;
     assign S = P ^ c;
 
     assign c[1] = G[0] | (c[0] & P[0]);
     assign c[2] = G[1] | (P[1] & G[0]) | (c[0] & P[0] & P[1]);
     assign c[3] = G[2] | (P[2] & G[1]) | (P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2]);
-    assign carry = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3]);
+    assign c[4] = G[3] | (P[3] & G[2]) | (P[3] & P[2] & G[1]) | (P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3]);
+    assign c[5] = G[4] | (P[4] & G[3]) | (P[4] & P[3] & G[2]) | (P[4] & P[3] & P[2] & G[1]) | (P[4] & P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3] & P[4]);
+    assign c[6] = G[5] | (P[5] & G[4]) | (P[5] & P[4] & G[3]) | (P[5] & P[4] & P[3] & G[2]) | (P[5] & P[4] & P[3] & P[2] & G[1]) | (P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3] & P[4] & P[5]);
+    assign c[7] = G[6] | (P[6] & G[5]) | (P[6] & P[5] & G[4]) | (P[6] & P[5] & P[4] & G[3]) | (P[6] & P[5] & P[4] & P[3] & G[2]) | (P[6] & P[5] & P[4] & P[3] & P[2] & G[1]) | (P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3] & P[4] & P[5] & P[6]);
+    assign carry = G[7] | (P[7] & G[6]) | (P[7] & P[6] & G[5]) | (P[7] & P[6] & P[5] & G[4]) | (P[7] & P[6] & P[5] & P[4] & G[3]) | (P[7] & P[6] & P[5] & P[4] & P[3] & G[2]) | (P[7] & P[6] & P[5] & P[4] & P[3] & P[2] & G[1]) | (P[7] & P[6] & P[5] & P[4] & P[3] & P[2] & P[1] & G[0]) | (c[0] & P[0] & P[1] & P[2] & P[3] & P[4] & P[5] & P[6] & P[7]);
+    
 endmodule
 
 module adder(
@@ -24,16 +29,13 @@ module adder(
         output wire[31:0] S,
         output wire carry
     );    
-    wire[7:1] c;    
+    wire[3:1] c;    
     
-    CarryLookaheadAdder subAdder0(a[3:0], b[3:0], c0, S[3:0], c[1]);
-    CarryLookaheadAdder subAdder1(a[7:4], b[7:4], c[1], S[7:4], c[2]);
-    CarryLookaheadAdder subAdder2(a[11:8], b[11:8], c[2], S[11:8], c[3]);
-    CarryLookaheadAdder subAdder3(a[15:12], b[15:12], c[3], S[15:12], c[4]);
-    CarryLookaheadAdder subAdder4(a[19:16], b[19:16], c[4], S[19:16], c[5]);
-    CarryLookaheadAdder subAdder5(a[23:20], b[23:20], c[5], S[23:20], c[6]);
-    CarryLookaheadAdder subAdder6(a[27:24], b[27:24], c[6], S[27:24], c[7]);
-    CarryLookaheadAdder subAdder7(a[31:28], b[31:28], c[7], S[31:28], carry);
+    CarryLookaheadAdder subAdder0(a[7:0], b[7:0], c0, S[7:0], c[1]);
+    CarryLookaheadAdder subAdder1(a[15:8], b[15:8], c[1], S[15:8], c[2]);
+    CarryLookaheadAdder subAdder2(a[23:16], b[23:16], c[2], S[23:16], c[3]);
+    CarryLookaheadAdder subAdder3(a[31:24], b[31:24], c[3], S[31:24], carry);
+    
 
 endmodule
 
