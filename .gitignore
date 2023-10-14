@@ -1,6 +1,7 @@
 prj/
 user/
 Verilog-Practice/
+.vscode/
 addd.v
 add.v
 add
